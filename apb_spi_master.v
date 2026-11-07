@@ -229,6 +229,21 @@ module apb_spi_master #(
       spi_op_q       <= 2'b00;
       tx_wptr_q      <= 4'd0;
       rx_rptr_q      <= 4'd0;
+      // FIX: these were previously left un-reset, which makes them X in a
+      // 4-state simulator.  int_en_q/thresholds feed events_o[0], so X there
+      // poisons spi_evt_any and the INTC never sees a rising edge on source 1.
+      clk_div_q      <= 8'h00;
+      spi_cmd_q      <= 32'h0;
+      spi_addr_q     <= 32'h0;
+      cmd_len_q      <= 6'd0;
+      addr_len_q     <= 6'd0;
+      data_len_q     <= 16'd0;
+      dummy_rd_q     <= 16'd0;
+      dummy_wr_q     <= 16'd0;
+      csreg_q        <= 4'd0;
+      tx_thresh_q    <= 8'h00;
+      rx_thresh_q    <= 8'h00;
+      int_en_q       <= 1'b0;
     end else begin
       // ---- APB register access ----
       if (apb_write_c) begin
